@@ -2,6 +2,7 @@ version: "3.3"
 services:    
   es1:
     build: .
+    image: myelasticsearch
     volumes:
       - ./esdata1:/usr/share/elasticsearch/data
       - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
@@ -16,7 +17,7 @@ services:
 
 ### add additionall instances accordingly
 #  es2:
-#    build: .
+#    image: myelasticsearch
 #    volumes:
 #      - ./esdata2:/usr/share/elasticsearch/data
 #      - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
@@ -30,7 +31,7 @@ services:
 #      - "9201:9200"
 
   redis:
-    image: redis
+    image: redis:alpine
     volumes:
       - ./redis-data:/data
       #- ./redis.conf:/usr/local/etc/redis/redis.conf
@@ -42,8 +43,8 @@ services:
       - 6379:6379
 
   mongo:
-    image: mongo:latest
-    container_name: "mongodb"
+    image: mongo
+    #    container_name: "mongodb"
     environment:
       - MONGO_DATA_DIR=/data/db
     #  - MONGO_LOG_DIR=/dev/null
