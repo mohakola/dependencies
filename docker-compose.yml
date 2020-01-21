@@ -29,6 +29,18 @@ services:
 #      - "9301:9300"
 #      - "9201:9200"
 
+  redis:
+    image: redis
+    volumes:
+      - ./redis-data:/data
+      #- ./redis.conf:/usr/local/etc/redis/redis.conf
+    environment:
+     - REDIS_REPLICATION_MODE=master
+    command: ["redis-server", "--appendonly", "yes"]
+    hostname: redis
+    ports:
+      - 6379:6379
+
   mongo:
     image: mongo:latest
     container_name: "mongodb"
@@ -50,3 +62,5 @@ volumes:
   esdata1:
   #  esdata2:
   mongodata:
+  redis-data:
+
