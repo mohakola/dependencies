@@ -1,0 +1,7 @@
+1- install docker
+2- install docker-compose
+3- cp elasticsearch.yml.tml to elasticsearch.yml
+4- add elasticsearch config and/or aws secret keys to elasticsearch.yml accordingly
+5- to add additionall service instances, uncomment related lines in docker-compose.yml and create esdata* and snapshot* folders accordingly
+6- run docker-compose up -d
+
