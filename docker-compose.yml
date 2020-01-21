@@ -29,6 +29,24 @@ services:
 #      - "9301:9300"
 #      - "9201:9200"
 
+  mongo:
+    image: mongo:latest
+    container_name: "mongodb"
+    environment:
+      - MONGO_DATA_DIR=/data/db
+    #  - MONGO_LOG_DIR=/dev/null
+      - MONGODB_USER="mongo"
+      - MONGODB_PASS="mongo"
+    volumes:
+      #  - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - ./mongodata:/data/db
+    ports:
+      - 27017:27017
+      - 27018:27018
+      - 27019:27019
+#        command: mongod --smallfiles --logpath=/dev/null # --quiet
+
 volumes:
   esdata1:
   #  esdata2:
+  mongodata:
