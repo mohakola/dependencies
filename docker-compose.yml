@@ -9,26 +9,27 @@ services:
       - ./snapshot1:/etc/snapshots
     environment:
       - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+        #      - ES_JAVA_OPT="-Xms512m -Xmx2048m"
       - discovery.type=single-node
     ports:
       - "9300:9300"
       - "9200:9200"
+    restart: unless-stopped
 
 ### add additionall instances accordingly
-#  es2:
-#    image: myelasticsearch
-#    volumes:
-#      - ./esdata2:/usr/share/elasticsearch/data
-#      - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-#      - ./snapshot2:/etc/snapshots
-#    environment:
-#      - bootstrap.memory_lock=true
-#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-#      - discovery.type=single-node
-#    ports:
-#      - "9301:9300"
-#      - "9201:9200"
+  es2:
+    image: elasticsearch:5.6-alpine
+    volumes:
+      - ./esdata2:/usr/share/elasticsearch/data
+      - ./elasticsearch5.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ./snapshot:/etc/snapshots
+    environment:
+      - bootstrap.memory_lock=true
+        #- "ES_JAVA_OPTS=-Xms512m -Xmx2048m"
+      - discovery.type=single-node
+    ports:
+      - "9301:9300"
+      - "9201:9200"
 
   redis:
     image: redis:alpine
@@ -41,6 +42,7 @@ services:
     hostname: redis
     ports:
       - 6379:6379
+    restart: unless-stopped
 
   mongo:
     image: mongo
@@ -58,10 +60,27 @@ services:
       - 27018:27018
       - 27019:27019
 #        command: mongod --smallfiles --logpath=/dev/null # --quiet
+    restart: unless-stopped
+    networks:
+      - mongo-net
+
+        #  nginx:
+        #    image: 'bitnami/nginx:1.16'
+        #    ports:
+        #      - '80:8080'
+        #    volumes:
+            #      - ./nginx.conf:/bitnami/nginx/conf/vhosts/nginx.conf:ro
+            #      - ./nginx.conf:/opt/bitnami/nginx/conf/server_blocks/nginx.conf:ro
+        #- nginxroot:/app:ro
+        #      - ../certs:/certs
+
+networks:
+  mongo-net:
+    driver: bridge
 
 volumes:
   esdata1:
-  #  esdata2:
+  esdata2:
   mongodata:
   redis-data:
-
+  nginxroot:
