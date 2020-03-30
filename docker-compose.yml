@@ -3,33 +3,60 @@ services:
   es1:
     build: .
     image: myelasticsearch
+    container_name: es1
     volumes:
       - ./esdata1:/usr/share/elasticsearch/data
       - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
       - ./snapshot1:/etc/snapshots
     environment:
+      - node.name=es1
       - bootstrap.memory_lock=true
-        #      - ES_JAVA_OPT="-Xms512m -Xmx2048m"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - discovery.type=single-node
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
     ports:
       - "9300:9300"
       - "9200:9200"
+    networks:
+      - elastic
     restart: unless-stopped
 
 ### add additionall instances accordingly
   es2:
-    image: elasticsearch:5.6-alpine
+    image: elasticsearch:5.6.16-alpine
+    container_name: es2
     volumes:
       - ./esdata2:/usr/share/elasticsearch/data
       - ./elasticsearch5.yml:/usr/share/elasticsearch/config/elasticsearch.yml
       - ./snapshot:/etc/snapshots
     environment:
+      - node.name=es2
       - bootstrap.memory_lock=true
-        #- "ES_JAVA_OPTS=-Xms512m -Xmx2048m"
       - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
     ports:
       - "9301:9300"
       - "9201:9200"
+    networks:
+      - elastic
+
+  kib1:
+    image: kibana:4.6.6
+    container_name: kib1
+    ports:
+      - 5601:5601
+    environment:
+      ELASTICSEARCH_URL: http://es1:9200
+      ELASTICSEARCH_HOSTS: http://es1:9200
+    networks:
+      - elastic
 
   redis:
     image: redis:alpine
@@ -46,7 +73,7 @@ services:
 
   mongo:
     image: mongo
-    #    container_name: "mongodb"
+    container_name: "mongo"
     environment:
       - MONGO_DATA_DIR=/data/db
     #  - MONGO_LOG_DIR=/dev/null
@@ -76,6 +103,8 @@ services:
 
 networks:
   mongo-net:
+    driver: bridge
+  elastic:
     driver: bridge
 
 volumes:
