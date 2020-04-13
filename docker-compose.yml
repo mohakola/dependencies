@@ -11,8 +11,9 @@ services:
     environment:
       - node.name=es1
       - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx2048m"
       - discovery.type=single-node
+      - ES_HEAP_SIZE=8g
     ulimits:
       memlock:
         soft: -1
