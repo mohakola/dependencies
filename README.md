@@ -16,11 +16,11 @@ It maps configuration files for each service and handles data persistency in the
 
 5- to add additionall service instances, uncomment related lines in docker-compose.yml and create esdata* and snapshot* folders accordingly
 
-6- run docker-compose up -d
+6- run ```docker-compose up -d```
 
 ## Test services
 
-1- test elastic search running "http :9200"
+1- test elastic search running ```"http :9200"```
 
 2- test mongodb running "mongo" client
 
