@@ -14,14 +14,16 @@
 #
 # Use a descriptive name for your cluster:
 #
-# cluster.name: my-application
+cluster.name: elasticsearch
 #
 # ------------------------------------ Node ------------------------------------
 #
 # Use a descriptive name for the node:
-#
-# node.name: node-1
-#
+
+
+## ToDo define by ENV Var
+# node.name: 
+
 # Add custom attributes to the node:
 #
 # node.rack: r1
@@ -40,7 +42,7 @@
 #
 # Lock the memory on startup:
 #
-# bootstrap.memory_lock: true
+bootstrap.memory_lock: true
 #
 # Make sure that the `ES_HEAP_SIZE` environment variable is set to about half the memory
 # available on the system and that the owner of the process is allowed to use this limit.
@@ -65,11 +67,13 @@
 # Pass an initial list of hosts to perform discovery when new node is started:
 # The default list of hosts is ["127.0.0.1", "[::1]"]
 #
-# discovery.zen.ping.unicast.hosts: ["host1", "host2"]
+
+## ToDo define by ENV Var
+discovery.zen.ping.unicast.hosts: es1      
 #
 # Prevent the "split brain" by configuring the majority of nodes (total number of nodes / 2 + 1):
 #
-# discovery.zen.minimum_master_nodes: 3
+discovery.zen.minimum_master_nodes: 2
 #
 # For more information, see the documentation at:
 # <http://www.elastic.co/guide/en/elasticsearch/reference/current/modules-discovery.html>
@@ -92,18 +96,15 @@
 # Require explicit names when deleting indices:
 #
 # action.destructive_requires_name: true
-#
 
-### uncomment in case you need inline scripts
-#
 #script.inline: true
 #script.indexed: true
 
 network.host: 0.0.0.0
 
-#cloud.aws.access_key: 
-#cloud.aws.secret_key: 
-#cloud.aws.protocol: https
+cloud.aws.access_key: 
+cloud.aws.secret_key: 
+cloud.aws.protocol: https
 
 http.cors.enabled: true
 http.cors.allow-origin: /https?:\/\/localhost(:[0-9]+)?/
