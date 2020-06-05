@@ -1,8 +1,8 @@
 version: "3.3"
 services:    
   es1:
-    build: .
-    image: myelasticsearch
+    build: mkelasticsearch
+    image: mkelasticsearch
     container_name: es1
     volumes:
       - ./esdata1:/usr/share/elasticsearch/data
@@ -29,7 +29,7 @@ services:
 
 ### add additionall instances accordingly
   es3:                                                                         
-    image: myelasticsearch                                                     
+    image: mkelasticsearch                                                     
     container_name: es3
     volumes:                                                                   
       - ./esdata3:/usr/share/elasticsearch/data                                
@@ -56,7 +56,7 @@ services:
     restart: unless-stopped                                                    
 
   es2:                                                                         
-    image: myelasticsearch                                                     
+    image: mkelasticsearch                                                     
     container_name: es2
     volumes:
       - ./esdata2:/usr/share/elasticsearch/data
