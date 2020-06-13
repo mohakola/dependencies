@@ -14,7 +14,7 @@
 #
 # Use a descriptive name for your cluster:
 #
-cluster.name: elasticsearch
+cluster.name: mkelasticsearch
 #
 # ------------------------------------ Node ------------------------------------
 #
@@ -73,7 +73,7 @@ discovery.zen.ping.unicast.hosts: es1
 #
 # Prevent the "split brain" by configuring the majority of nodes (total number of nodes / 2 + 1):
 #
-discovery.zen.minimum_master_nodes: 2
+#discovery.zen.minimum_master_nodes: 2           # Uncomment in case of cluster mode
 #
 # For more information, see the documentation at:
 # <http://www.elastic.co/guide/en/elasticsearch/reference/current/modules-discovery.html>
@@ -97,7 +97,7 @@ discovery.zen.minimum_master_nodes: 2
 #
 # action.destructive_requires_name: true
 
-#script.inline: true
+#script.inline: true                     # Uncomment for data manupolation systems; NEVER on prod
 #script.indexed: true
 
 network.host: 0.0.0.0
