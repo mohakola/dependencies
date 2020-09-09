@@ -118,6 +118,7 @@ services:
 
   redis:
     image: redis:alpine
+    container_name: redis1
     volumes:
       - ./data/redis-data:/data
       #- ./redis.conf:/usr/local/etc/redis/redis.conf
@@ -131,7 +132,7 @@ services:
 
   mongo:
     image: mongo
-    container_name: "mongo"
+    container_name: mongo1
     environment:
       - MONGO_DATA_DIR=/data/db
     #  - MONGO_LOG_DIR=/dev/null
@@ -140,11 +141,11 @@ services:
     volumes:
       #  - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
       - ./data/mongodata:/data/db
+      - ./data/mongodumps:/data/dumps
     ports:
       - 27017:27017
       - 27018:27018
       - 27019:27019
-#        command: mongod --smallfiles --logpath=/dev/null # --quiet
     restart: unless-stopped
     networks:
       - mongo-net
@@ -171,5 +172,6 @@ volumes:
 #  esdata3:
 #  esdata5:
   mongodata:
+  mongodumps:
   redis-data:
 #  nginxroot:

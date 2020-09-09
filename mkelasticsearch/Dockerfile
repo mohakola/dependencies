@@ -4,4 +4,4 @@ FROM elasticsearch:2.4.5-alpine
 #COPY --chown=elasticsearch:elasticsearch /opt/elasticsearch-docker/elasticsearch.yml /usr/share/elasticsearch/config/elasticsearch.yml 
 
 ## install the amazone cloud plugin
-RUN plugin install cloud-aws -b
+RUN plugin install cloud-aws -b && plugin install mapper-size -b
