@@ -1,0 +1,178 @@
+version: "3.3"
+services:    
+  es1:
+    build: mkelasticsearch
+    image: mkelasticsearch
+    container_name: es1
+    volumes:
+      - ./data/esdata1:/usr/share/elasticsearch/data
+      - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ./data/snapshots:/data/snapshots
+    environment:
+      - node.name=es1
+      - node.data=true
+      - node.master=true
+     # - discovery.seed_hosts=es3,es2              # Configure these lines according to clustering requirements
+     # - cluster.initial_master_nodes=es1,es2,es3
+      - "ES_JAVA_OPTS=-Xms8g -Xmx8g"
+      - ES_HEAP_SIZE=8g
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9300:9300"
+      - "9200:9200"
+    networks:
+      - elastic
+    restart: unless-stopped
+
+### add additionall instances accordingly
+#  es3:                                                                         
+#    image: mkelasticsearch                                                     
+#    container_name: es3
+#    volumes:                                                                   
+#      - ./data/esdata3:/usr/share/elasticsearch/data                                
+#      - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml  
+#      - ./data/snapshot:/etc/snapshots                                             
+#    environment:                                                               
+#      - node.name=es3                                                          
+#      - node.data=true
+#      - node.master=false
+#      - "discovery.zen.ping.unicast.hosts=es1"
+#      - discovery.seed_hosts=es1,es2
+#      - cluster.initial_master_nodes=es1,es2,es3
+#      - "ES_JAVA_OPTS=-Xms8g -Xmx8g"                                          
+#      - ES_HEAP_SIZE=8g
+#    ulimits:                                                                   
+#      memlock:                                                                 
+#        soft: -1                                                               
+#        hard: -1                                                               
+#    ports:                                                                     
+#      - "9303:9300"                                                            
+#      - "9203:9200"                                                            
+#    networks:                                                                  
+#      - elastic                                                                
+#    restart: unless-stopped                                                    
+#
+#  es2:                                                                         
+#    image: mkelasticsearch                                                     
+#    container_name: es2
+#    volumes:
+#      - ./data/esdata2:/usr/share/elasticsearch/data
+#      - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+#      - ./data/snapshot:/etc/snapshots
+#    environment:
+#      - node.name=es2
+#      - node.data=true
+#      - node.master=false
+#      - "discovery.zen.ping.unicast.hosts=es1"
+#      - discovery.seed_hosts=es1,es3
+#      - cluster.initial_master_nodes=es1,es2,es3
+#      - "ES_JAVA_OPTS=-Xms8g -Xmx8g"
+#      - ES_HEAP_SIZE=8g
+#    ulimits:
+#      memlock:
+#        soft: -1
+#        hard: -1
+#    ports:
+#      - "9302:9300"
+#      - "9202:9200"
+#    networks:
+#      - elastic
+#    restart: unless-stopped                                                    
+#
+
+#  es5:
+#    image: elasticsearch:5.6.16-alpine
+#    container_name: es5
+#    volumes:
+#      - ./data/esdata5:/usr/share/elasticsearch/data
+#      - ./elasticsearch5.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+#      - ./data/snapshot:/etc/snapshots
+#    environment:
+#      - node.name=es5
+#      - bootstrap.memory_lock=true
+#      - discovery.type=single-node
+#      - "ES_JAVA_OPTS=-Xms8g -Xmx8g"
+#    ulimits:
+#      memlock:
+#        soft: -1
+#        hard: -1
+#    ports:
+#      - "9301:9300"
+#      - "9201:9200"
+#    networks:
+#      - elastic
+
+  kib1:
+    image: kibana:4.6.6
+    container_name: kib1
+    ports:
+      - 5601:5601
+    environment:
+      ELASTICSEARCH_URL: http://es1:9200
+      ELASTICSEARCH_HOSTS: http://es1:9200
+    networks:
+      - elastic
+
+  redis:
+    image: redis:alpine
+    container_name: redis1
+    volumes:
+      - ./data/redis-data:/data
+      #- ./redis.conf:/usr/local/etc/redis/redis.conf
+    environment:
+     - REDIS_REPLICATION_MODE=master
+    command: ["redis-server", "--appendonly", "yes"]
+    hostname: redis
+    ports:
+      - 6379:6379
+    restart: unless-stopped
+
+  mongo:
+    image: mongo
+    container_name: "mongo"
+    environment:
+      - MONGO_DATA_DIR=/data/db
+    #  - MONGO_LOG_DIR=/dev/null
+      - MONGODB_USER="mongo"
+      - MONGODB_PASS="mongo"
+    volumes:
+      #  - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - ./data/mongodata:/data/db
+      - ./data/mongodumps:/data/dumps
+    ports:
+      - 27017:27017
+      - 27018:27018
+      - 27019:27019
+    restart: unless-stopped
+    networks:
+      - mongo-net
+
+        #  nginx:
+        #    image: 'bitnami/nginx:1.16'
+        #    ports:
+        #      - '80:8080'
+        #    volumes:
+            #      - ./nginx.conf:/bitnami/nginx/conf/vhosts/nginx.conf:ro
+            #      - ./nginx.conf:/opt/bitnami/nginx/conf/server_blocks/nginx.conf:ro
+        #- nginxroot:/app:ro
+        #      - ../certs:/certs
+
+networks:
+  mongo-net:
+    driver: bridge
+  elastic:
+    driver: bridge
+
+volumes:
+  esdata1:
+  snapshots:
+#  esdata2:
+#  esdata3:
+#  esdata5:
+  mongodata:
+  mongodumps:
+  redis-data:
+#  nginxroot:
